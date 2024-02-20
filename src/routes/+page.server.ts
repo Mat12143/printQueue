@@ -3,13 +3,12 @@ import { uploadFile } from '$lib/file';
 import { fail } from '@sveltejs/kit';
 
 export const load = async ({}) => {
-	const waitingTasks = await getAllWaitingTasks();
-
-	const completedTasks = await getAllCompletedTasks();
+	const waiting = await getAllWaitingTasks();
+	const completed = await getAllCompletedTasks();
 
 	return {
-		waiting: waitingTasks,
-		completed: completedTasks
+		completed: completed,
+		waiting: waiting
 	};
 };
 
@@ -28,6 +27,15 @@ export const actions = {
 			});
 		}
 
+		const fileExtension = file.name.split('.')[file.name.split('.').length - 1];
+		console.log(fileExtension);
+
+		if (!['stl', '3mf'].includes(fileExtension))
+			return fail(400, {
+				error: true,
+				message: 'File non supportato'
+			});
+
 		const fileUploadResp = await uploadFile(file, author);
 		if (fileUploadResp.error || fileUploadResp.name == null)
 			return fail(400, {
@@ -36,5 +44,9 @@ export const actions = {
 			});
 
 		await createTask(author, fileUploadResp.name, note);
+
+		return {
+			error: false
+		};
 	}
 };

@@ -1,13 +1,23 @@
 <script lang="ts">
-	import Task from '$lib/components/Task.svelte';
-	import type { PrintTask } from '@prisma/client';
+	import PrintTask from '$lib/components/PrintTask.svelte';
+	import type { Task } from '$lib/zod/types';
+	import { toast } from '@zerodevx/svelte-toast';
+	import { onMount } from 'svelte';
 
-	export let data: { completed: PrintTask[]; waiting: PrintTask[] };
+	export let data: { completed: Task[]; waiting: Task[] };
+    export let form
+
 	let fileBtn: HTMLInputElement;
-	// export let form: { error: boolean; message: string };
+
+    onMount(() => {
+        if (!form) return
+        if (form.error) toast.push(form.message)
+        if (!form.error) toast.push("Aggiunta stampa")
+    })
+
 </script>
 
-<div class="flex flex-col justify-center items-center h-screen w-screen">
+<div class="flex flex-col justify-center items-center h-full w-full">
 	<div class="lg:p-0 p-3 h-full flex lg:flex-row flex-col lg:w-[900px] w-[400px] gap-10">
 		<!-- Left side -->
 		<div class="lg:w-1/2 lg:h-full">
@@ -17,7 +27,7 @@
 			>
 				{#if data.waiting.length != 0}
 					{#each data.waiting as task}
-						<Task data={task} />
+						<PrintTask data={task} />
 					{/each}
 				{:else}
 					<p>Nessuna stampa</p>
@@ -29,9 +39,7 @@
 			<h1 class="text-2xl font-semibold py-5 text-accent">Aggiungi Stampa</h1>
 
 			<form action="?/create" method="POST" enctype="multipart/form-data">
-				<div
-					class="flex items-center justify-center bg-accent rounded-md p-5 text-primary"
-				>
+				<div class="flex items-center justify-center bg-accent rounded-md p-5 text-primary">
 					<div class="w-full h-full">
 						<div class="flex flex-col gap-1 pb-2 w-full">
 							<label for="author">Autore</label>
@@ -83,7 +91,7 @@
 			>
 				{#if data.completed.length != 0}
 					{#each data.completed as task}
-						<Task data={task} />
+						<PrintTask data={task} />
 					{/each}
 				{:else}
 					<p>Nessuna stampa</p>

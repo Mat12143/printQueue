@@ -17,6 +17,7 @@
         "@sveltejs/kit": "^2.0.0",
         "@sveltejs/vite-plugin-svelte": "^3.0.0",
         "@types/node": "^20.11.16",
+        "@zerodevx/svelte-toast": "^0.9.5",
         "autoprefixer": "^10.4.17",
         "postcss": "^8.4.35",
         "prettier": "^3.1.1",
@@ -30,6 +31,9 @@
     },
     "type": "module",
     "dependencies": {
-        "sqlite3": "^5.1.7"
+        "@types/better-sqlite3": "^7.6.9",
+        "bcrypt": "^5.1.1",
+        "better-sqlite3": "^9.4.1",
+        "zod": "^3.22.4"
     }
 }

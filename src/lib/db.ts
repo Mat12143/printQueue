@@ -1,43 +1,78 @@
-import { PrismaClient } from '@prisma/client';
-import type { PrintTask } from '@prisma/client';
+import { parseTask } from '$lib/zod/types';
+import Database from 'better-sqlite3';
+import type { Task } from '$lib/zod/types';
 
-const prisma = new PrismaClient();
+const db = new Database('./database.db');
+
+const TableSchema = `
+CREATE TABLE IF NOT EXISTS Tasks(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author TEXT,
+    createdAt INTEGER,
+    notes TEXT,
+    fileName TEXT,
+    status INTEGER,
+    printedAt INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Admin (
+    password TEXT,
+    cookieAuth TEXT
+)
+`;
+
+db.exec(TableSchema);
 
 export const createTask = async (author: string, file: string, note: string) => {
-    await prisma.printTask.create({
-        // @ts-ignore
-        data: {
-            author: author,
-            file: file,
-            note: note
-        }
-    });
+	const nowTime = Date.now();
+
+	const resp = db
+		.prepare(
+			`INSERT INTO Tasks (author, fileName, notes, createdAt, status) VALUES (?, ?, ?, ?, ?)`
+		)
+		.run(author, file, note, nowTime, 0);
+
+	if (resp?.changes) return true;
+	else return false;
 };
 
 export const getAllWaitingTasks = async () => {
-    const query: PrintTask[] = await prisma.printTask.findMany({
-        where: {
-            status: {
-                equals: 0
-            }
-        },
-        orderBy: [{ createdAt: 'asc' }],
-        take: 10
-    });
+	const tasks: Task[] = new Array<Task>();
 
-    return query;
+	const data = db.prepare('SELECT * FROM Tasks WHERE Tasks.status = 0').all();
+
+	data.forEach((d) => {
+		const resp = parseTask(d);
+		if (!resp.err && resp.task != null) tasks.push(resp.task);
+	});
+
+	return tasks;
 };
 
 export const getAllCompletedTasks = async () => {
-    const query: PrintTask[] = await prisma.printTask.findMany({
-        where: {
-            status: {
-                not: 0
-            }
-        },
-        orderBy: [{ createdAt: 'asc' }],
-        take: 4
-    });
+	const tasks: Task[] = new Array<Task>();
 
-    return query;
+	const data = db.prepare('SELECT * FROM Tasks WHERE Tasks.status != 0').all();
+
+	data.forEach((d) => {
+		const resp = parseTask(d);
+
+		if (!resp.err && resp.task != null) tasks.push(resp.task);
+	});
+
+	return tasks;
+};
+
+export const isIstanceNew = () => {
+	const data = db.prepare('SELECT * FROM Admin').all();
+
+	if (data.length == 0) return true;
+	else return false;
+};
+
+export const setAdminPassword = (password: string) => {
+	const resp = db.prepare(`INSERT INTO Admin (password) VALUES (?, ?)`).run(password, null);
+
+	if (resp?.changes) return true;
+	else return false;
 };

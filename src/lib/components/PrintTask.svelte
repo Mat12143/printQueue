@@ -1,31 +1,30 @@
 <script lang="ts">
-	import type { PrintTask } from '@prisma/client';
 	import { getTaskStateString } from '$lib/taskState';
 	import { onMount } from 'svelte';
+	import type { Task } from '$lib/zod/types';
 
-	export let data: PrintTask;
-	let date: string = "...";
+	export let data: Task;
+	let date: string = '...';
+
+	const dateOptions = {
+		month: 'long',
+		year: 'numeric',
+		day: 'numeric'
+	};
 
 	onMount(() => {
-		if (data.status != 0) {
-			date = data.printedAt!.toLocaleString('it-IT', {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric'
-			});
-		} else
-			date = data.createdAt.toLocaleDateString('it-IT', {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric'
-			});
+		if (data.status != 0 && data.printedAt) {
+            // @ts-ignore
+			date = new Date(data.printedAt).toLocaleString('it-IT', dateOptions);
+            // @ts-ignore
+		} else date = new Date(data.createdAt).toLocaleDateString('it-IT', dateOptions);
 	});
 </script>
 
 <div class="w-full h-[70px] bg-accent rounded-md">
 	<div class="grid grid-cols-3 w-full h-full gap-2 px-5">
 		<div class="flex text-center items-center">
-			<h1 class="text-md font-semibold text-primary">{data.author}</h1>
+			<h1 class="text-md font-semibold text-primary text-left">{data.author}</h1>
 		</div>
 
 		<div class="flex text-center items-center">
