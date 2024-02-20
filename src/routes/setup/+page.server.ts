@@ -1,5 +1,6 @@
-import { isIstanceNew } from '$lib/db';
+import { isIstanceNew, setAdminPassword } from '$lib/db';
 import { fail, redirect } from '@sveltejs/kit';
+import bcrypt from 'bcrypt';
 
 export const load = async ({ locals }) => {
 	if (!locals.admin) return redirect(303, '/');
@@ -21,5 +22,11 @@ export const actions = {
 
 		const data = await request.formData();
 		const password = await data.get('password');
+
+		const hashedPassword = bcrypt.hashSync(password, 10);
+
+		setAdminPassword(hashedPassword);
+
+		throw redirect(303, '/');
 	}
 };

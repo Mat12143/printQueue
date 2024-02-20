@@ -8,11 +8,21 @@
     export let form
 
 	let fileBtn: HTMLInputElement;
+    let files : FileList
+    let uploadHTML: HTMLInputElement 
+
+    $: {
+        if (files) {
+            uploadHTML.innerHTML = files[0].name
+
+        }
+    }
 
     onMount(() => {
         if (!form) return
         if (form.error) toast.push(form.message)
         if (!form.error) toast.push("Aggiunta stampa")
+
     })
 
 </script>
@@ -66,6 +76,7 @@
 							<label for="file">File di Stampa</label>
 							<input
 								bind:this={fileBtn}
+                                bind:files
 								class="hidden"
 								type="file"
 								id="file"
@@ -73,7 +84,7 @@
 								accept=".stl, .3mf"
 								required
 							/>
-							<button class="bg-primary text-accent rounded-md p-2" on:click={() => fileBtn.click()}
+							<button class="bg-primary text-accent rounded-md p-2" bind:this={uploadHTML} on:click={() => fileBtn.click()}
 								>Carica File</button
 							>
 						</div>

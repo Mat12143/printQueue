@@ -71,7 +71,7 @@ export const isIstanceNew = () => {
 };
 
 export const setAdminPassword = (password: string) => {
-	const resp = db.prepare(`INSERT INTO Admin (password) VALUES (?, ?)`).run(password, null);
+	const resp = db.prepare(`INSERT INTO Admin (password) VALUES (?)`).run(password);
 
 	if (resp?.changes) return true;
 	else return false;
