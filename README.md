@@ -1,3 +1,3 @@
 Feature to add
 
-- [] Keep form data on error
+- [ ] Keep form data on error
