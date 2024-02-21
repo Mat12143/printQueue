@@ -24,55 +24,59 @@ CREATE TABLE IF NOT EXISTS Admin (
 db.exec(TableSchema);
 
 export const createTask = async (author: string, file: string, note: string) => {
-	const nowTime = Date.now();
+    const nowTime = Date.now();
 
-	const resp = db
-		.prepare(
-			`INSERT INTO Tasks (author, fileName, notes, createdAt, status) VALUES (?, ?, ?, ?, ?)`
-		)
-		.run(author, file, note, nowTime, 0);
+    const resp = db
+        .prepare(
+            `INSERT INTO Tasks (author, fileName, notes, createdAt, status) VALUES (?, ?, ?, ?, ?)`
+        )
+        .run(author, file, note, nowTime, 0);
 
-	if (resp?.changes) return true;
-	else return false;
+    if (resp?.changes) return true;
+    else return false;
 };
 
 export const getAllWaitingTasks = async () => {
-	const tasks: Task[] = new Array<Task>();
+    const tasks: Task[] = new Array<Task>();
 
-	const data = db.prepare('SELECT * FROM Tasks WHERE Tasks.status = 0').all();
+    const data = db
+        .prepare('SELECT * FROM Tasks WHERE Tasks.status = 0 ORDER BY Tasks.createdAt ASC')
+        .all();
 
-	data.forEach((d) => {
-		const resp = parseTask(d);
-		if (!resp.err && resp.task != null) tasks.push(resp.task);
-	});
+    data.forEach((d) => {
+        const resp = parseTask(d);
+        if (!resp.err && resp.task != null) tasks.push(resp.task);
+    });
 
-	return tasks;
+    return tasks;
 };
 
 export const getAllCompletedTasks = async () => {
-	const tasks: Task[] = new Array<Task>();
+    const tasks: Task[] = new Array<Task>();
 
-	const data = db.prepare('SELECT * FROM Tasks WHERE Tasks.status != 0').all();
+    const data = db
+        .prepare('SELECT * FROM Tasks WHERE Tasks.status != 0 ORDER BY Tasks.printedAt ASC')
+        .all();
 
-	data.forEach((d) => {
-		const resp = parseTask(d);
+    data.forEach((d) => {
+        const resp = parseTask(d);
 
-		if (!resp.err && resp.task != null) tasks.push(resp.task);
-	});
+        if (!resp.err && resp.task != null) tasks.push(resp.task);
+    });
 
-	return tasks;
+    return tasks;
 };
 
 export const isIstanceNew = () => {
-	const data = db.prepare('SELECT * FROM Admin').all();
+    const data = db.prepare('SELECT * FROM Admin').all();
 
-	if (data.length == 0) return true;
-	else return false;
+    if (data.length == 0) return true;
+    else return false;
 };
 
 export const setAdminPassword = (password: string) => {
-	const resp = db.prepare(`INSERT INTO Admin (password) VALUES (?)`).run(password);
+    const resp = db.prepare(`INSERT INTO Admin (password) VALUES (?)`).run(password);
 
-	if (resp?.changes) return true;
-	else return false;
+    if (resp?.changes) return true;
+    else return false;
 };

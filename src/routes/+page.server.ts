@@ -46,7 +46,8 @@ export const actions = {
         await createTask(author, fileUploadResp.name, note);
 
         return {
-            error: false
+            error: false,
+            message: null
         };
     }
 };
