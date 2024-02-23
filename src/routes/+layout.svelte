@@ -7,7 +7,6 @@
 			'--toastColor': 'white',
 			'--toastBackground': '#24a543',
             "--toastBorderRadius" : "6px"
-
 		}
 	};
 </script>

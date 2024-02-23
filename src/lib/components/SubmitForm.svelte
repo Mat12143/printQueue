@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { allowedExtensions } from '$lib/const';
-	import { onMount } from 'svelte';
 
 	let fileBtn: HTMLInputElement;
 	let files: FileList;

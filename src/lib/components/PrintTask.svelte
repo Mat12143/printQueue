@@ -4,6 +4,7 @@
 	import type { Task } from '$lib/zod/types';
 
 	export let data: Task;
+
 	let date: string = '...';
 
 	const dateOptions = {
@@ -14,27 +15,29 @@
 
 	onMount(() => {
 		if (data.status != 0 && data.printedAt) {
-            // @ts-ignore
+			// @ts-ignore
 			date = new Date(data.printedAt).toLocaleString('it-IT', dateOptions);
-            // @ts-ignore
+			// @ts-ignore
 		} else date = new Date(data.createdAt).toLocaleDateString('it-IT', dateOptions);
 	});
 </script>
 
-<div class="w-full h-[70px] bg-accent rounded-md">
-	<div class="grid grid-cols-3 w-full h-full gap-2 px-5">
-		<div class="flex text-center items-center">
-			<h1 class="text-md font-semibold text-primary text-left">{data.author}</h1>
-		</div>
+<button>
+	<div class="w-full h-[70px] bg-accent rounded-md">
+		<div class="grid grid-cols-3 w-full h-full gap-2 px-5">
+			<div class="flex text-center items-center">
+				<h1 class="text-md font-semibold text-primary text-left">{data.author}</h1>
+			</div>
 
-		<div class="flex text-center items-center">
-			<p class="text-md text-primary">
-				{date}
-			</p>
-		</div>
+			<div class="flex text-center items-center">
+				<p class="text-md text-primary">
+					{date}
+				</p>
+			</div>
 
-		<div class="w-full h-full flex justify-center items-center text-primary">
-			<h1>{getTaskStateString(data)}</h1>
+			<div class="w-full h-full flex justify-center items-center text-primary">
+				<h1>{getTaskStateString(data)}</h1>
+			</div>
 		</div>
 	</div>
-</div>
+</button>
