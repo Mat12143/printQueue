@@ -2,8 +2,10 @@
 	import { getTaskStateString } from '$lib/taskState';
 	import { onMount } from 'svelte';
 	import type { Task } from '$lib/zod/types';
+	import { selectedTask } from '$lib/stores';
 
 	export let data: Task;
+    export let admin = false;
 
 	let date: string = '...';
 
@@ -22,8 +24,8 @@
 	});
 </script>
 
-<button>
-	<div class="w-full h-[70px] bg-accent rounded-md">
+<button disabled={!admin} on:click={() => selectedTask.set(data)}>
+	<div class="w-full h-[70px] bg-accent rounded-md border-solid" class:text-md={$selectedTask == data}>
 		<div class="grid grid-cols-3 w-full h-full gap-2 px-5">
 			<div class="flex text-center items-center">
 				<h1 class="text-md font-semibold text-primary text-left">{data.author}</h1>

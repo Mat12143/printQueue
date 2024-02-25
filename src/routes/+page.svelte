@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AdminForm from '$lib/components/AdminForm.svelte';
 	import Column from '$lib/components/Column.svelte';
 	import List from '$lib/components/List.svelte';
 	import PrintTask from '$lib/components/PrintTask.svelte';
@@ -8,22 +9,25 @@
 	import { toast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
 
-	export let data: { completed: Task[]; waiting: Task[], admin: boolean };
-	export let form : { error: boolean, message: string | null };
+	export let data: { completed: Task[]; waiting: Task[]; admin: boolean };
+	export let form: { error: boolean; message: string | null };
 
 	onMount(() => {
-		if (!form) return;
-		if (form.error && form.message) toast.push(form.message);
+		if (form == null) return;
+		if (form?.error && form?.message) toast.push(form.message);
 		if (!form.error) toast.push('Stampa aggiunta');
 	});
-
 </script>
 
 <div class="flex justify-end flex-row w-full p-2">
 	{#if data.admin}
-		<a href="/logout" data-sveltekit-reload><button class="bg-accent text-primary p-2 rounded-md">Esci</button></a>
-    {:else}
-        <a href="/login" data-sveltekit-reload><button class="bg-accent text-primary p-2 rounded-md">Admin</button></a>
+		<a href="/logout" data-sveltekit-reload
+			><button class="bg-accent text-primary p-2 rounded-md">Esci</button></a
+		>
+	{:else}
+		<a href="/login" data-sveltekit-reload
+			><button class="bg-accent text-primary p-2 rounded-md">Admin</button></a
+		>
 	{/if}
 </div>
 <div class="flex flex-col justify-center items-center h-full w-full">
@@ -34,7 +38,7 @@
 			<List>
 				{#if data.waiting.length != 0}
 					{#each data.waiting as task}
-						<PrintTask data={task} />
+						<PrintTask admin={data.admin} data={task} />
 					{/each}
 				{:else}
 					<p class="text-accent">Nessuna stampa</p>
@@ -45,7 +49,11 @@
 		<!-- Right side -->
 		<Column>
 			<Title title="Aggiungi Stampa" />
-			<SubmitForm />
+			{#if data.admin}
+				<AdminForm />
+			{:else}
+				<SubmitForm />
+			{/if}
 
 			<Title title="Stampe effettuate" />
 			<List>

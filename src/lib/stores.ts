@@ -1,3 +1,4 @@
 import { writable } from 'svelte/store';
+import type { Task } from './zod/types';
 
-export const selectedTaskID = writable<number>();
+export const selectedTask = writable<Task>();
