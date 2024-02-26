@@ -1,5 +1,4 @@
 <script lang="ts">
-	export let data: { istanceNew: boolean };
 </script>
 
 <div class="flex items-center justify-center w-screen h-screen">

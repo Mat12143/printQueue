@@ -29,7 +29,7 @@ export const actions = {
         const note = data.get('note');
         const file = data.get('file');
 
-        if (!author || !file || file.name == undefined) {
+        if (!author || !file || file?.name == undefined) {
             return fail(400, {
                 error: true,
                 message: 'Controlla di aver inserito tutti i dati'
@@ -51,7 +51,9 @@ export const actions = {
                 message: 'Errore nel caricamento del file. Riprovare'
             });
 
-        await createTask(author, fileUploadResp.name, note);
+        if ()
+
+            await createTask(author, fileUploadResp.name, note);
 
         return {
             error: false,
@@ -68,6 +70,12 @@ export const actions = {
         const formData = await request.formData();
         const taskID = formData.get('taskID');
 
+        if (!taskID || typeof taskID != 'number')
+            return {
+                error: true,
+                message: 'Errore. Riprovare'
+            };
+
         if (!setTaskStatus(taskID, 1))
             return {
                 error: true
@@ -83,6 +91,12 @@ export const actions = {
 
         const formData = await request.formData();
         const taskID = formData.get('taskID');
+
+        if (!taskID || typeof taskID != 'number')
+            return {
+                error: true,
+                message: 'Errore. Riprovare'
+            };
 
         if (!setTaskStatus(taskID, 2))
             return {
