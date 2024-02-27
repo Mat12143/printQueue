@@ -1,15 +1,31 @@
 version: '3'
 services:
   qtail:
-    build: .
+    image: 'qtail:latest'
     container_name: 'qtail'
     restart: 'always'
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.qtail.rule=Host(`localhost`)'
+      # Routers
+      - 'traefik.http.routers.qtail.rule=Host(`192.168.50.71`)'
       - 'traefik.http.routers.qtail.entrypoints=web'
+
+      - 'traefik.http.routers.adminQtail.rule=Path(`/login`) && Query(`/login=`) && Method(`POST`)'
+      - 'traefik.http.routers.adminQtail.entrypoints=web'
+      - 'traefik.http.routers.adminQtail.middlewares=rateAdmin@docker'
+
+      - 'traefik.http.routers.createQtail.rule=Path(`/`) && Query(`/create=`) && Method(`POST`)'
+      - 'traefik.http.routers.createQtail.entrypoints=web'
+      - 'traefik.http.routers.createQtail.middlewares=rateCreate@docker'
+
+      # Middlewares
+      - 'traefik.http.middlewares.rateAdmin.ratelimit.average=5'
+      - 'traefik.http.middlewares.rateAdmin.ratelimit.period=1m'
+
+      - 'traefik.http.middlewares.rateCreate.ratelimit.average=3'
+      - 'traefik.http.middlewares.rateCreate.ratelimit.period=2h'
     environment:
-      - 'ORIGIN=http://localhost'
+      - 'ORIGIN=http://192.168.50.71'
     networks:
       - 'web'
     volumes:
@@ -20,17 +36,24 @@ services:
     image: 'traefik:latest'
     container_name: 'traefik'
     restart: 'always'
+    environment:
+      - 'TZ=EU/Rome'
     networks:
       - web
     command:
       - '--api.dashboard=true'
       - '--providers.docker=true'
       - '--providers.docker.exposedbydefault=false'
+      # Entrypoints
       - '--entrypoints.dash.address=:8080'
       - '--entrypoints.web.address=:80'
+      # Logs
+      - '--accesslog=true'
+      - '--accesslog.filepath=/logs/errors.log'
+      - '--accesslog.filters.statuscodes=401,429,500-504'
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.dashboard.rule=Host(`localhost`)'
+      - 'traefik.http.routers.dashboard.rule=Host(`192.168.50.71`)'
       - 'traefik.http.routers.dashboard.entrypoints=dash'
       - 'traefik.http.routers.dashboard.service=api@internal'
       - 'traefik.http.routers.dashboard.middlewares=auth'
@@ -39,6 +62,7 @@ services:
       - '80:80'
       - '8080:8080'
     volumes:
+      - '/var/log/traefik:/logs'
       - '/var/run/docker.sock:/var/run/docker.sock'
 
 networks:
