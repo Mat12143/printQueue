@@ -14,17 +14,12 @@ services:
       - 'traefik.http.routers.adminQtail.entrypoints=web'
       - 'traefik.http.routers.adminQtail.middlewares=rateAdmin@docker'
 
-      - 'traefik.http.routers.createQtail.rule=Path(`/`) && Query(`/create=`) && Method(`POST`)'
-      - 'traefik.http.routers.createQtail.entrypoints=web'
-      - 'traefik.http.routers.createQtail.middlewares=rateCreate@docker'
-
       # Middlewares
       - 'traefik.http.middlewares.rateAdmin.ratelimit.average=5'
       - 'traefik.http.middlewares.rateAdmin.ratelimit.period=1m'
 
-      - 'traefik.http.middlewares.rateCreate.ratelimit.average=3'
-      - 'traefik.http.middlewares.rateCreate.ratelimit.period=2h'
     environment:
+      - 'BODY_SIZE_LIMIT=Infinity'
       - 'ORIGIN=http://192.168.50.71'
     networks:
       - 'web'
