@@ -8,8 +8,14 @@ import {
 } from '$lib/db';
 import { uploadFile } from '$lib/file';
 import { fail, redirect } from '@sveltejs/kit';
+import { readdir } from 'fs';
 
 export const load = async ({ locals }) => {
+	readdir('.', { withFileTypes: true }, (_, files) => {
+		files.forEach((file) => {
+			console.log(file);
+		});
+	});
 	if (isIstanceNew()) throw redirect(303, '/setup');
 	const waiting = await getAllWaitingTasks();
 	const completed = await getAllCompletedTasks();
