@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { selectedTask } from '$lib/stores';
+	import { onMount } from 'svelte';
+    const downloadPath = "/"
+    onMount(() => {
+    })
 </script>
 
 <div class="flex items-center justify-center bg-accent rounded-md p-5 text-primary">
@@ -27,7 +31,7 @@
 			<a
 				class="bg-primary text-accent text-center rounded-md p-2"
 				class:pointer-events-none={$selectedTask == undefined}
-				href="/files/{$selectedTask?.fileName}"
+				href="/get?file={$selectedTask?.fileName}"
 				><button disabled={$selectedTask == undefined}>Download file</button></a
 			>
 		</div>

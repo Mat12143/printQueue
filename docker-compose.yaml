@@ -24,7 +24,7 @@ services:
     networks:
       - 'web'
     volumes:
-      - 'files:/app/static/files'
+      - 'files:/app/files'
       - 'db:/app/db'
 
   traefik:
