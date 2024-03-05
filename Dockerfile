@@ -14,7 +14,7 @@ RUN rm -rf /app/*.yaml
 RUN rm -rf /app/*.js
 RUN rm -rf /app/src
 
-VOLUME /app/db /app/files
+VOLUME /app/db /app/files /app/logs
 
 EXPOSE 3000
 

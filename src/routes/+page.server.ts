@@ -7,6 +7,7 @@ import {
     setTaskStatus
 } from '$lib/db';
 import { uploadFile } from '$lib/file';
+import { infoLogger } from '$lib/logging';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {
@@ -84,12 +85,6 @@ export const actions = {
 
         const formData = await request.formData();
         const taskID = formData.get('taskID');
-
-        if (!taskID || typeof taskID != 'number')
-            return {
-                error: true,
-                message: 'Errore. Riprovare'
-            };
 
         if (!setTaskStatus(taskID, 2))
             return {

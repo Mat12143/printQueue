@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { allowedExtensions } from '$lib/const';
 
 	let fileBtn: HTMLInputElement;
@@ -21,7 +22,7 @@
 	}
 </script>
 
-<form action="?/create" method="POST" enctype="multipart/form-data">
+<form action="?/create" method="POST" enctype="multipart/form-data" use:enhance>
 	<div class="flex items-center justify-center bg-accent rounded-md p-5 text-primary">
 		<div class="w-full h-full">
 			<div class="flex flex-col gap-1 pb-2 w-full">

@@ -26,6 +26,7 @@ services:
     volumes:
       - 'files:/app/files'
       - 'db:/app/db'
+      - '/var/log/qtail/:/app/logs'
 
   traefik:
     image: 'traefik:latest'

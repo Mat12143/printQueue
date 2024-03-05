@@ -6,16 +6,16 @@
 	import SubmitForm from '$lib/components/SubmitForm.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import type { Task } from '$lib/zod/types';
-	import { toast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
+    import toast, { Toaster } from 'svelte-french-toast';
 
 	export let data: { completed: Task[]; waiting: Task[]; admin: boolean };
 	export let form: { error: boolean; message: string | null };
 
 	onMount(() => {
 		if (form == null) return;
-		if (form?.error && form?.message) toast.push(form.message);
-		if (!form.error) toast.push('Stampa aggiunta');
+		if (form?.error && form?.message) toast.error(form.message);
+		if (!form.error) toast.success('Stampa aggiunta');
 	});
 </script>
 
@@ -68,3 +68,4 @@
 		</Column>
 	</div>
 </div>
+<Toaster />

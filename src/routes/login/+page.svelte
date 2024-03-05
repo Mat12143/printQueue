@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { toast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
+	import toast, { Toaster } from 'svelte-french-toast';
 
     export let form : { error: boolean, message: string | null }
 
     onMount(() => {
-        if (form?.error && form?.message) toast.push(form?.message)
+        if (form?.error && form?.message) toast.error(form?.message)
     })
 
 </script>
@@ -34,3 +34,4 @@
 		</div>
 	</div>
 </div>
+<Toaster/>
