@@ -20,9 +20,14 @@
 			submitButton.disabled = true;
 		}
 	}
+
+    function reset() {
+        submitButton.disabled = true
+        uploadHTML.innerHTML = "Carica file"
+    }
 </script>
 
-<form action="?/create" method="POST" enctype="multipart/form-data" use:enhance>
+<form action="?/create" method="POST" enctype="multipart/form-data" use:enhance on:submit={reset}>
 	<div class="flex items-center justify-center bg-accent rounded-md p-5 text-primary">
 		<div class="w-full h-full">
 			<div class="flex flex-col gap-1 pb-2 w-full">

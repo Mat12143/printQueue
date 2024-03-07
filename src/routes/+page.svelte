@@ -35,7 +35,7 @@
 		<!-- Left side -->
 		<Column>
 			<Title title="Stampe in attesa" />
-			<List>
+			<List type="long">
 				{#if data.waiting.length != 0}
 					{#each data.waiting as task}
 						<PrintTask admin={data.admin} data={task} />
@@ -56,7 +56,7 @@
 			{/if}
 
 			<Title title="Stampe effettuate" />
-			<List>
+			<List type="short">
 				{#if data.completed.length != 0}
 					{#each data.completed as task}
 						<PrintTask data={task} />
