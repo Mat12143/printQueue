@@ -7,7 +7,7 @@ services:
     labels:
       - 'traefik.enable=true'
       # Routers
-      - 'traefik.http.routers.qtail.rule=Host(`192.168.50.71`)'
+      - 'traefik.http.routers.qtail.rule=Host(`${EXPOSE_IP}`)'
       - 'traefik.http.routers.qtail.entrypoints=web'
 
       - 'traefik.http.routers.adminQtail.rule=Path(`/login`) && Query(`/login=`) && Method(`POST`)'
@@ -20,7 +20,7 @@ services:
 
     environment:
       - 'BODY_SIZE_LIMIT=Infinity'
-      - 'ORIGIN=http://192.168.50.71'
+      - 'ORIGIN=http://${EXPOSE_IP}'
     networks:
       - 'web'
     volumes:
@@ -45,17 +45,19 @@ services:
       - '--entrypoints.web.address=:80'
       # Logs
       - '--accesslog=true'
-      - '--accesslog.filepath=/logs/errors.log'
-      - '--accesslog.filters.statuscodes=401,429,500-504'
+      - '--accesslog.filepath=/logs/access.log'
+      - '--log.level=INFO'
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.dashboard.rule=Host(`192.168.50.71`)'
+      - 'traefik.http.routers.dashboard.rule=Host(`${EXPOSE_IP}`)'
       - 'traefik.http.routers.dashboard.entrypoints=dash'
       - 'traefik.http.routers.dashboard.service=api@internal'
       - 'traefik.http.routers.dashboard.middlewares=auth'
       - 'traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$N9MTkji2$$QOyaU7gvHgMhl4wF3PO5l.'
     ports:
-      - '80:80'
+      - target: 80
+        published: 80
+        mode: host
       - '8080:8080'
     volumes:
       - '/var/log/traefik:/logs'
