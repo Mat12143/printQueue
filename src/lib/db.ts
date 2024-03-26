@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS Admin (
 )
 `;
 
+db.exec(TableSchema);
+
 // DB migration
 // @todo TO REFACTOR
 try {
@@ -30,8 +32,6 @@ try {
 } catch (error) {
     db.exec('ALTER TABLE Tasks ADD title TEXT');
 }
-
-db.exec(TableSchema);
 
 export const createTask = async (author: string, file: string, note: string, title: string) => {
     const nowTime = Date.now();
