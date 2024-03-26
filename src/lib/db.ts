@@ -1,7 +1,6 @@
 import { parseTask } from '$lib/zod/types';
 import bcrypt from 'bcrypt';
 import Database from 'better-sqlite3';
-import { SqliteError } from 'better-sqlite3';
 import type { Task } from '$lib/zod/types';
 
 const db = new Database('./db/database.db');
