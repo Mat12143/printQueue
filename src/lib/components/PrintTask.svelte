@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getTaskStateString } from '$lib/taskState';
 	import { onMount } from 'svelte';
 	import type { Task } from '$lib/zod/types';
 	import { selectedTask } from '$lib/stores';
@@ -28,7 +27,7 @@
 	<div class="w-full h-[70px] bg-accent rounded-md border-solid" class:text-md={$selectedTask == data}>
 		<div class="grid grid-cols-3 w-full h-full gap-2 px-5">
 			<div class="flex text-center items-center">
-				<h1 class="text-md font-semibold text-primary text-left">{data.author}</h1>
+				<h1 class="text-md font-semibold text-primary text-left max-w-[115px] truncate">{data.author}</h1>
 			</div>
 
 			<div class="flex text-center items-center">
@@ -38,7 +37,7 @@
 			</div>
 
 			<div class="w-full h-full flex justify-center items-center text-primary">
-				<h1>{getTaskStateString(data)}</h1>
+				<h1 class="max-w-[115px] truncate">{data.title == null ? "Non impostato" : data.title}</h1>
 			</div>
 		</div>
 	</div>

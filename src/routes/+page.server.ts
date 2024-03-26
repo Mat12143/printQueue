@@ -28,16 +28,21 @@ export const actions = {
 		const author = data.get('author');
 		const note = data.get('note');
 		const file = data.get('file');
+		const title = data.get('title');
 
-		if (!author || !file || file?.name == undefined) {
+		if (!author || !file || file?.name == undefined || !title) {
 			return fail(400, {
 				error: true,
 				message: 'Controlla di aver inserito tutti i dati'
 			});
 		}
+		if (author.toString().length > 21 || title.toString().lenght > 21)
+			return fail(400, {
+				error: true,
+				message: 'Nome o titolo troppo lungo'
+			});
 
 		const fileExtension = file.name.split('.')[file.name.split('.').length - 1];
-		console.log(fileExtension);
 
 		if (!allowedExtensions.includes(fileExtension))
 			return fail(400, {
@@ -52,11 +57,11 @@ export const actions = {
 				message: 'Errore nel caricamento del file. Riprovare'
 			});
 
-		await createTask(author, fileUploadResp.name, note);
+		await createTask(author, fileUploadResp.name, note, title);
 
 		return {
 			error: false,
-			message: null
+			message: 'Stampa aggiunta'
 		};
 	},
 	printed: async ({ locals, request }) => {
@@ -73,7 +78,7 @@ export const actions = {
 			return {
 				error: true
 			};
-		return { error: false };
+		return { error: false, message: 'Stampa stampata' };
 	},
 	reject: async ({ locals, request }) => {
 		if (!locals.admin)
@@ -89,6 +94,6 @@ export const actions = {
 			return {
 				error: true
 			};
-		return { error: false };
+		return { error: false, message: 'Stampa rifiutata' };
 	}
 };

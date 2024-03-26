@@ -1,6 +1,7 @@
 import { parseTask } from '$lib/zod/types';
 import bcrypt from 'bcrypt';
 import Database from 'better-sqlite3';
+import { SqliteError } from 'better-sqlite3';
 import type { Task } from '$lib/zod/types';
 
 const db = new Database('./db/database.db');
@@ -13,7 +14,8 @@ CREATE TABLE IF NOT EXISTS Tasks(
     notes TEXT,
     fileName TEXT,
     status INTEGER,
-    printedAt INTEGER
+    printedAt INTEGER,
+    title TEXT
 );
 CREATE TABLE IF NOT EXISTS Admin (
     password TEXT,
@@ -22,16 +24,24 @@ CREATE TABLE IF NOT EXISTS Admin (
 )
 `;
 
+// DB migration
+// @todo TO REFACTOR
+try {
+    db.prepare('SELECT title FROM tasks WHERE id = 1;').run();
+} catch (error) {
+    db.exec('ALTER TABLE Tasks ADD title TEXT');
+}
+
 db.exec(TableSchema);
 
-export const createTask = async (author: string, file: string, note: string) => {
+export const createTask = async (author: string, file: string, note: string, title: string) => {
     const nowTime = Date.now();
 
     const resp = db
         .prepare(
-            `INSERT INTO Tasks (author, fileName, notes, createdAt, status) VALUES (?, ?, ?, ?, ?)`
+            `INSERT INTO Tasks (author, fileName, notes, createdAt, status, title) VALUES (?, ?, ?, ?, ?, ?)`
         )
-        .run(author, file, note, nowTime, 0);
+        .run(author, file, note, nowTime, 0, title);
 
     if (resp?.changes) return true;
     else return false;

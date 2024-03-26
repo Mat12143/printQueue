@@ -6,30 +6,23 @@
 	import SubmitForm from '$lib/components/SubmitForm.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import type { Task } from '$lib/zod/types';
-	import { onMount } from 'svelte';
-    import toast, { Toaster } from 'svelte-french-toast';
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	export let data: { completed: Task[]; waiting: Task[]; admin: boolean };
 	export let form: { error: boolean; message: string | null };
 
-	onMount(() => {
-		if (form == null) return;
-		if (form?.error && form?.message) toast.error(form.message);
-		if (!form.error) toast.success('Stampa aggiunta');
-	});
+	$: {
+		if (form) {
+			if (form?.error && form?.message) toast.error(form.message);
+			if (!form.error && form?.message)
+				toast.success(form.message, {
+					duration: 3000,
+					iconTheme: { primary: '#24A543', secondary: '#FFFAEE' }
+				});
+		}
+	}
 </script>
 
-<div class="flex justify-end flex-row w-full p-2">
-	{#if data.admin}
-		<a href="/logout" data-sveltekit-reload
-			><button class="bg-accent text-primary p-2 rounded-md">Esci</button></a
-		>
-	{:else}
-		<a href="/login" data-sveltekit-reload
-			><button class="bg-accent text-primary p-2 rounded-md">Admin</button></a
-		>
-	{/if}
-</div>
 <div class="flex flex-col justify-center items-center h-full w-full">
 	<div class="lg:p-0 p-3 h-full flex lg:flex-row flex-col lg:w-[900px] w-[400px] gap-10">
 		<!-- Left side -->
