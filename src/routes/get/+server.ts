@@ -7,7 +7,7 @@ export async function GET({ url }) {
     const path = `./files/${fileName}`;
     if (!existsSync(path)) return error(404);
 
-    const data = readFileSync(path, 'utf-8');
+    const data = readFileSync(path);
 
     const fileExtension = fileName.split('.')[fileName.split('.').length - 1];
 
