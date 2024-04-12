@@ -1,23 +1,27 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { allowedExtensions } from '$lib/const';
+	import { writable } from 'svelte/store';
 
 	let fileBtn: HTMLInputElement;
 	let files: FileList;
-	let uploadHTML: HTMLButtonElement;
 	let submitButton: HTMLButtonElement;
 
+    let uploadHTML = writable<HTMLButtonElement>()
+
 	$: {
+        console.log(files)
+
 		if (submitButton) submitButton.disabled = true;
 		if (files) {
 			const splitted = files[0].name.split('.');
 			const fileExtension = splitted[splitted.length - 1];
 
 			if (allowedExtensions.includes(fileExtension)) {
-				uploadHTML.innerHTML = files[0].name;
+				$uploadHTML.innerHTML = files[0].name;
 				submitButton.disabled = false;
 			} else {
-				uploadHTML.innerHTML = 'File non supportato';
+				$uploadHTML.innerHTML = 'File non supportato';
 				submitButton.disabled = true;
 			}
 		}
@@ -25,7 +29,7 @@
 
 	function reset() {
 		submitButton.disabled = true;
-		uploadHTML.innerHTML = 'Carica file';
+		$uploadHTML.innerHTML = 'Carica file';
 	}
 </script>
 
@@ -83,7 +87,7 @@
 				/>
 				<button
 					class="bg-primary text-accent rounded-md p-2"
-					bind:this={uploadHTML}
+					bind:this={$uploadHTML}
 					on:click|preventDefault={() => fileBtn.click()}>Carica File</button
 				>
 			</div>
